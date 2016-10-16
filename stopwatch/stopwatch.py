@@ -3,15 +3,16 @@ import simplegui
 
 # define global variables
 Running = False
-Width = 400
-Height = 300
+Width, Height  = 400, 300 
 Center = [Width/3, Height/2]
 Time, Counter, Wins = 0, 0, 0
+Game_over = "GAME OVER"
 
 # define helper function format that converts time
 # in tenths of seconds into formatted string A:BC.D
 def format(t):
     global Tenths_of_sec
+    
     Minutes = t // 600
     Tens = t // 10 % 60 // 10
     Seconds= t // 10 % 60 % 10
@@ -22,40 +23,45 @@ def format(t):
 # define event handlers for buttons; "Start", "Stop", "Reset"
 def start_btn_handler():
     global Running
+    
     Running = True
     timer.start()
 
 def stop_btn_handler():
-    global Running, Tenths_of_sec, Wins, Counter
+    global Running, Wins, Counter
     
     if Running and str(Tenths_of_sec) == "0":
         Wins += 1
     elif Running and str(Tenths_of_sec) != "0":
         Counter += 1
-        Running = False
-    
+        Running = False    
     timer.stop()
 
 def reset_btn_handler():
-    global Time, Running, Wins, Counter
+    global Time, Wins, Counter
     
-    Running = False
-    Time = 0
-    Wins, Counter = 0 ,0
+    Time, Wins, Counter = 0 ,0, 0
 
 # define event handler for timer with 0.1 sec interval
 def timer_handler():
-    global Time  
+    global Time, Running
     
-    Time += 1
     print Time
-
+    Time += 1
+    if Time == 6000:
+        Running = False
+        timer.stop()
+        print "Game Over", "You made " + str(Wins) + "clicks on time of " + str(Counter) + "times" 
+        
 # define draw handler
-def draw_handler(canvas):
+def draw_handler(canvas):    
     canvas.draw_text(format(Time), (Center), 50, 'Red')
     canvas.draw_text("Good - Bad", (265, 40), 28, "Lime")
     canvas.draw_text(str(Wins) + "/" + str(Counter), (310, 80), 40, "Red")
-    
+    if Time == 6000:
+        canvas.draw_text(Game_over, (65, 220), 50, 'White')
+        canvas.draw_text("You made " + str(Wins) + " clicks correctly of " + str(Counter) + " times" , (60, 270), 20, 'White')
+           
 # create frame
 frame = simplegui.create_frame('Stopwatch', Width, Height, 150)
 timer = simplegui.create_timer(100, timer_handler)
