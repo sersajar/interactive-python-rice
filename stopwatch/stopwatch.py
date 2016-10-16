@@ -2,53 +2,70 @@
 import simplegui
 
 # define global variables
-width = 400
-height = 300
-center = [width/2, height/2]
-tenths_of_second = 0
-
-print tenths_of_second
+Running = False
+Width = 400
+Height = 300
+Center = [Width/3, Height/2]
+Time, Counter, Wins = 0, 0, 0
 
 # define helper function format that converts time
 # in tenths of seconds into formatted string A:BC.D
 def format(t):
-    pass
-    
+    global Tenths_of_sec
+    Minutes = t // 600
+    Tens = t // 10 % 60 // 10
+    Seconds= t // 10 % 60 % 10
+    Tenths_of_sec = t % 10 
+    Message = str(Minutes) + ":" + str(Tens) + str(Seconds) + "." + str(Tenths_of_sec)
+    return Message   
+
 # define event handlers for buttons; "Start", "Stop", "Reset"
 def start_btn_handler():
-    pass
+    global Running
+    Running = True
+    timer.start()
 
 def stop_btn_handler():
-    pass
+    global Running, Tenths_of_sec, Wins, Counter
+    
+    if Running and str(Tenths_of_sec) == "0":
+        Wins += 1
+    elif Running and str(Tenths_of_sec) != "0":
+        Counter += 1
+        Running = False
+    
+    timer.stop()
 
 def reset_btn_handler():
-    pass
-
+    global Time, Running, Wins, Counter
+    
+    Running = False
+    Time = 0
+    Wins, Counter = 0 ,0
 
 # define event handler for timer with 0.1 sec interval
 def timer_handler():
-    global tenths_of_second
+    global Time  
     
-    tenths_of_second += 1
-    print tenths_of_second
+    Time += 1
+    print Time
 
 # define draw handler
 def draw_handler(canvas):
-    canvas.draw_text(str(tenths_of_second), (center), 48, 'Red')
+    canvas.draw_text(format(Time), (Center), 50, 'Red')
+    canvas.draw_text("Good - Bad", (265, 40), 28, "Lime")
+    canvas.draw_text(str(Wins) + "/" + str(Counter), (310, 80), 40, "Red")
     
 # create frame
-frame = simplegui.create_frame('Stopwatch', width, height, 150)
+frame = simplegui.create_frame('Stopwatch', Width, Height, 150)
+timer = simplegui.create_timer(100, timer_handler)
 
 # register event handlers
 start_btn = frame.add_button('Start', start_btn_handler, 150)
 stop_btn = frame.add_button('Stop', stop_btn_handler, 150)
-reset_btn = frame.add_button('Reset', stop_btn_handler, 150)
-
-timer = simplegui.create_timer(100, timer_handler)
+reset_btn = frame.add_button('Reset', reset_btn_handler, 150)
 frame.set_draw_handler(draw_handler)
 
 # start frame
 frame.start()
-timer.start()
-
-# Please remember to review the grading rubric
+print Time
