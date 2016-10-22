@@ -2,27 +2,18 @@
 
 ###################################################
 # Student should add code for the format function here
-Minutes = 0
-Tens = 0
-Seconds = 0
-Tenths_of_sec = 0
+
 
 
 def format(t):
-    global Minutes, Tens, Seconds, Tenths_of_sec
-        
-    t = str(t)
-    if len(t) == 1:
-        Tenths_of_sec = t
-    
-    elif len(t) == 2:
-        pass
-        
-        
-        
-    Message = str(Minutes) + ":" + str(Tens) + str(Seconds) + "." + Tenths_of_sec
+    Minutes = t // 600
+    Tens = t // 10 % 60 // 10
+    Seconds= t // 10 % 60 % 10
+    Tenths_of_sec = t % 10 
+    Message = str(Minutes) + ":" + str(Tens) + str(Seconds) + "." + str(Tenths_of_sec)
+ 
     return Message
-    
+        
 
 
 ###################################################
